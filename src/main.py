@@ -4,8 +4,9 @@ from textnode import TextNode, TextType
 
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD_TEXT, "https://www.boost.dev")
+    node = TextNode("This is a text node", TextType.BOLD, "https://www.boost.dev")
     print(node)
 
 
-main()
+if __name__ == "__main__":
+    main()
