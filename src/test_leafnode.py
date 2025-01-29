@@ -10,14 +10,25 @@ class TestLeafNode(unittest.TestCase):
 
         self.assertEqual(leaf_node, html_node2)
 
+    def test_print(self):
+        leaf_node = LeafNode("p", "This is a paragraph of text")
+        self.assertEqual(str(leaf_node), "LeafNode(p, This is a paragraph of text, None)")
+
+    def test_print_withprops(self):
+        leaf_node = LeafNode("p", "This is a paragraph of text", {"title": "test"})
+        self.assertEqual(str(leaf_node), "LeafNode(p, This is a paragraph of text, {'title': 'test'})")
+
     def test_notag(self):
         leaf_node = LeafNode(None, "This is a paragraph of text")
         self.assertEqual(leaf_node.to_html(), 'This is a paragraph of text')
 
     def test_tag(self):
         leaf_node = LeafNode("p", "This is a paragraph of text")
-        with self.assertRaises(NotImplementedError):
-            leaf_node.to_html()
+        self.assertEqual(leaf_node.to_html(), '<p>This is a paragraph of text</p>')
+
+    def test_btag(self):
+        leaf_node = LeafNode("b", "Bold text")
+        self.assertEqual(leaf_node.to_html(), '<b>Bold text</b>')
 
 
 if __name__ == "__main__":

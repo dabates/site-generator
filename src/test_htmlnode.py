@@ -16,15 +16,21 @@ class TestHtmlNode(unittest.TestCase):
 
         self.assertEqual(html_node, html_node2)
 
-    def test_print(self) :
+    def test_print(self):
         html_node = HtmlNode(props={"href": "http://localhost", "target": "_blank"})
         output = f"{html_node}"
-        self.assertIn("_blank", output)
+        self.assertEqual("HtmlNode(None, None, None, {'href': 'http://localhost', 'target': '_blank'})", output)
 
     def test_props2html(self):
         html_node = HtmlNode(props={"href": "http://localhost", "target": "_blank"})
         output = html_node.props_to_html()
         self.assertEqual(' href="http://localhost" target="_blank"', output)
+
+    def test_props2html_noprops(self):
+        html_node = HtmlNode('p', 'Test Paragraph')
+        output = html_node.props_to_html()
+        self.assertEqual('', output)
+
 
 if __name__ == "__main__":
     unittest.main()
