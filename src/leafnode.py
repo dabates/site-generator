@@ -9,7 +9,7 @@ class LeafNode(HtmlNode):
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
 
     def to_html(self):
-        if self.value is None or self.value == '':
+        if self.value is None:
             raise ValueError
 
         if self.tag is None:
