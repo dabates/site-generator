@@ -3,11 +3,24 @@ import re
 from src.textnode import TextType, TextNode
 
 
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+
+    ## Use all our splitting to do the thing
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    nodes = split_nodes_delimiter(nodes, '**', TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, '*', TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+
+    return nodes;
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
     for node in old_nodes:
-        if node.text_type != TextType.NORMAL:
+        if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
 
@@ -17,7 +30,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
         for i, segment in enumerate(split_text):
             if segment:
-                new_nodes.append(TextNode(segment, text_type if i % 2 else TextType.NORMAL))
+                new_nodes.append(TextNode(segment, text_type if i % 2 else TextType.TEXT))
 
     return new_nodes
 
@@ -26,7 +39,7 @@ def split_nodes_image(old_nodes):
     new_nodes = []
 
     for node in old_nodes:
-        if node.text_type != TextType.NORMAL:
+        if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
 
@@ -40,14 +53,14 @@ def split_nodes_image(old_nodes):
         for alt, url in images:
             split_text = text.split(f"![{alt}]({url})", 1)
             if split_text[0]:
-                new_nodes.append(TextNode(split_text[0], TextType.NORMAL))
+                new_nodes.append(TextNode(split_text[0], TextType.TEXT))
 
             new_nodes.append(TextNode(alt, TextType.IMAGE, url))
 
             text = split_text[1] if len(split_text) > 1 else ""
 
         if text:
-            new_nodes.append(TextNode(text, TextType.NORMAL))
+            new_nodes.append(TextNode(text, TextType.TEXT))
 
     return new_nodes
 
@@ -56,7 +69,7 @@ def split_nodes_link(old_nodes):
     new_nodes = []
 
     for node in old_nodes:
-        if node.text_type != TextType.NORMAL:
+        if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
 
@@ -70,14 +83,14 @@ def split_nodes_link(old_nodes):
         for alt, url in links:
             split_text = text.split(f"[{alt}]({url})", 1)
             if split_text[0]:
-                new_nodes.append(TextNode(split_text[0], TextType.NORMAL))
+                new_nodes.append(TextNode(split_text[0], TextType.TEXT))
 
             new_nodes.append(TextNode(alt, TextType.LINK, url))
 
             text = split_text[1] if len(split_text) > 1 else ""
 
         if text:
-            new_nodes.append(TextNode(text, TextType.NORMAL))
+            new_nodes.append(TextNode(text, TextType.TEXT))
 
     return new_nodes
 

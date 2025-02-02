@@ -19,7 +19,7 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(str(node), "TextNode(This is a text node, bold, None)")
 
     def test_normal(self):
-        node = TextNode("This is a text node", TextType.NORMAL)
+        node = TextNode("This is a text node", TextType.TEXT)
         self.assertEqual(node.text_node_to_html_node().to_html(), "This is a text node")
 
     def test_bold(self):
