@@ -12,11 +12,11 @@ class TestLeafNode(unittest.TestCase):
 
     def test_print(self):
         leaf_node = LeafNode("p", "This is a paragraph of text")
-        self.assertEqual(str(leaf_node), "LeafNode(p, This is a paragraph of text, None)")
+        self.assertEqual(str(leaf_node), "LeafNode(tag=\"p\", value=\"This is a paragraph of text\")")
 
     def test_print_withprops(self):
         leaf_node = LeafNode("p", "This is a paragraph of text", {"title": "test"})
-        self.assertEqual(str(leaf_node), "LeafNode(p, This is a paragraph of text, {'title': 'test'})")
+        self.assertEqual(str(leaf_node), "LeafNode(tag=\"p\", value=\"This is a paragraph of text\", props=\"{'title': 'test'}\")")
 
     def test_notag(self):
         leaf_node = LeafNode(None, "This is a paragraph of text")

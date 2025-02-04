@@ -19,7 +19,7 @@ class TestHtmlNode(unittest.TestCase):
     def test_print(self):
         html_node = HtmlNode(props={"href": "http://localhost", "target": "_blank"})
         output = f"{html_node}"
-        self.assertEqual("HtmlNode(None, None, None, {'href': 'http://localhost', 'target': '_blank'})", output)
+        self.assertEqual("HtmlNode(props=\"{'href': 'http://localhost', 'target': '_blank'}\")", output)
 
     def test_props2html(self):
         html_node = HtmlNode(props={"href": "http://localhost", "target": "_blank"})

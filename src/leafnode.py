@@ -6,7 +6,16 @@ class LeafNode(HtmlNode):
         super().__init__(tag, value, None, props)
 
     def __repr__(self):
-        return f"LeafNode({self.tag}, {self.value}, {self.props})"
+        attribs = [
+            f'tag="{self.tag}"' if self.tag is not None else None,
+            f'value="{self.value}"' if self.value is not None else None,
+            f'children="{self.children}"' if self.children is not None else None,
+            f'props="{self.props}"' if self.props is not None else None,
+        ]
+
+        return_str = ", ".join(filter(None, attribs))
+
+        return f"LeafNode({return_str})"
 
     def to_html(self):
         if self.value is None:

@@ -16,7 +16,7 @@ class TestTextNode(unittest.TestCase):
 
     def test_repr(self):
         node = TextNode("This is a text node", TextType.BOLD)
-        self.assertEqual(str(node), "TextNode(This is a text node, bold, None)")
+        self.assertEqual(str(node), "TextNode(text=\"This is a text node\", text_type=\"bold\")")
 
     def test_normal(self):
         node = TextNode("This is a text node", TextType.TEXT)

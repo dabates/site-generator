@@ -1,5 +1,7 @@
 import re
 
+from src.htmlnode import HtmlNode
+from src.text_utils import text_to_textnodes
 from src.textnode import TextType
 
 
@@ -30,6 +32,58 @@ def block_to_block_type(markdown):
         return "ordered_list"
 
     return "paragraph"
+
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    html_blocks = []
+
+    for block in blocks:
+        block_type = block_to_block_type(block)
+
+        match block_type:
+            case 'heading':
+                level = block.count('#', 0, block.index(' '))
+                text = block[level + 1:].strip()
+
+                html_blocks.append(HtmlNode(f"h{level}", children=text_to_children(text)))
+            case 'paragraph':
+                html_blocks.append(HtmlNode(f"p", children=text_to_children(block)))
+            case 'code':
+                text_node = block.strip('`')
+                html_blocks.append(HtmlNode('pre', children=[HtmlNode('code', children=text_to_children(text_node))]))
+            case 'quote':
+                text = ""
+                for line in block.split("\n"):
+                    text += f"{line.lstrip('> ')}"
+
+                html_blocks.append(HtmlNode('blockquote', children=text_to_children(text)))
+            case 'unordered_list':
+                items = block.split('\n')
+                list_items = []
+                for item in items:
+                    list_items.append(HtmlNode("li", children=text_to_children(item[2:])))
+
+                html_blocks.append(HtmlNode("ul", children=list_items))
+            case 'ordered_list':
+                items = block.split('\n')
+                list_items = []
+                for item in items:
+                    list_items.append(HtmlNode("li", children=text_to_children(item[3:])))
+
+                html_blocks.append(HtmlNode("ol", children=list_items))
+
+    return HtmlNode("div", children=html_blocks)
+
+
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+
+    return_nodes = []
+    for node in text_nodes:
+        return_nodes.append(node.text_node_to_html_node())
+
+    return return_nodes
 
 
 def is_ordered_list(markdown):
