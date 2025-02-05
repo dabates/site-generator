@@ -2,7 +2,6 @@ import re
 
 from src.htmlnode import HtmlNode
 from src.text_utils import text_to_textnodes
-from src.textnode import TextType
 
 
 def markdown_to_blocks(markdown):
@@ -96,3 +95,11 @@ def is_ordered_list(markdown):
             return False  # Fail if any line is incorrectly numbered
 
     return True
+
+
+def extract_title(markdown):
+    for block in markdown_to_blocks(markdown):
+        if block_to_block_type(block) == "heading" and block[0:2] == "# ":  ## Must be a h1 only
+            return block[2:].strip()
+
+    raise Exception(f"Could not extract title: {markdown}")

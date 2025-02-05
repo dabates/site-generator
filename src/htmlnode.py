@@ -6,7 +6,13 @@ class HtmlNode:
         self.props = props
 
     def to_html(self):
-        raise NotImplementedError()
+        content = self.value if self.value else ""
+
+        if self.children is not None:
+            for child in self.children:
+                content += child.to_html()
+
+        return f"<{self.tag}{self.props_to_html()}>{content}</{self.tag}>"
 
     def props_to_html(self):
         if self.props is None:
@@ -27,4 +33,4 @@ class HtmlNode:
         return f"HtmlNode({return_str})"
 
     def __eq__(self, other):
-        return self.tag == other.tag and self.value == other.value and self.children == other.children
+        return self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props

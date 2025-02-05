@@ -5,31 +5,49 @@ from leafnode import LeafNode
 
 class TestLeafNode(unittest.TestCase):
     def test_eq(self):
-        leaf_node = LeafNode("p", "This is a paragraph of text")
-        html_node2 = LeafNode("p", "This is a paragraph of text")
+        node1 = LeafNode("p", "This is a paragraph of text")
+        node2 = LeafNode("p", "This is a paragraph of text")
 
-        self.assertEqual(leaf_node, html_node2)
+        self.assertEqual(node1, node2)
 
-    def test_print(self):
-        leaf_node = LeafNode("p", "This is a paragraph of text")
-        self.assertEqual(str(leaf_node), "LeafNode(tag=\"p\", value=\"This is a paragraph of text\")")
+    def test_repr_no_props(self):
+        node = LeafNode("p", "This is a paragraph")
 
-    def test_print_withprops(self):
-        leaf_node = LeafNode("p", "This is a paragraph of text", {"title": "test"})
-        self.assertEqual(str(leaf_node), "LeafNode(tag=\"p\", value=\"This is a paragraph of text\", props=\"{'title': 'test'}\")")
+        self.assertEqual(repr(node), 'LeafNode(tag="p", value="This is a paragraph")')
 
-    def test_notag(self):
-        leaf_node = LeafNode(None, "This is a paragraph of text")
-        self.assertEqual(leaf_node.to_html(), 'This is a paragraph of text')
+    def test_repr_with_props(self):
+        node = LeafNode("p", "This is a paragraph", {"title": "test"})
 
-    def test_tag(self):
-        leaf_node = LeafNode("p", "This is a paragraph of text")
-        self.assertEqual(leaf_node.to_html(), '<p>This is a paragraph of text</p>')
+        self.assertEqual(
+            repr(node),
+            'LeafNode(tag="p", value="This is a paragraph", props="{\'title\': \'test\'}")'
+        )
 
-    def test_btag(self):
-        leaf_node = LeafNode("b", "Bold text")
-        self.assertEqual(leaf_node.to_html(), '<b>Bold text</b>')
+    def test_to_html_no_tag(self):
+        node = LeafNode(None, "Plain text")
 
+        self.assertEqual(node.to_html(), "Plain text")
+
+    def test_to_html_with_tag(self):
+        node = LeafNode("p", "This is a paragraph")
+
+        self.assertEqual(node.to_html(), "<p>This is a paragraph</p>")
+
+    def test_to_html_bold_tag(self):
+        node = LeafNode("b", "Bold text")
+
+        self.assertEqual(node.to_html(), "<b>Bold text</b>")
+
+    def test_to_html_empty_value_with_tag(self):
+        node = LeafNode("p", "")  # Empty string as value
+
+        self.assertEqual(node.to_html(), "<p></p>")
+
+    def test_to_html_no_value_raises_error(self):
+        node = LeafNode("p", None)  # No value
+
+        with self.assertRaises(ValueError):
+            node.to_html()
 
 if __name__ == "__main__":
     unittest.main()
