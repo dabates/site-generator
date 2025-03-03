@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from src.markdown_blocks import extract_title, markdown_to_html_node
 
@@ -24,9 +25,8 @@ def copy_recursive(src, dest):
             shutil.copy2(src_path, dest_path)  # Use copy2 to preserve metadata
 
 
-def sync_directories():
+def sync_directories(dest):
     src = "static"
-    dest = "public"
 
     if os.path.exists(dest):
         print(f"Deleting existing contents of '{dest}'")
@@ -38,7 +38,7 @@ def sync_directories():
     print("Sync complete!")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, base_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path) as from_file:
@@ -52,11 +52,14 @@ def generate_page(from_path, template_path, dest_path):
     html_content = template_content.replace("{{ Title }}", page_title)
     html_content = html_content.replace("{{ Content }}", markdown_to_html_node(markdown).to_html())
 
+    html_content = html_content.replace('href="/', f'href="{base_path}')
+    html_content = html_content.replace('src="/', f'src="{base_path}')
+
     with open(dest_path, "w") as out_file:
         out_file.write(html_content)
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path):
     if not os.path.exists(dir_path_content):
         print(f"Source '{dest_dir_path}' does not exist.")
         return
@@ -75,13 +78,17 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
 
         if os.path.isdir(src_path):
             print(f"Creating directory: {dest_path}")
-            generate_pages_recursive(src_path, template_path, dest_path)
+            generate_pages_recursive(src_path, template_path, dest_path, base_path)
         elif os.path.isfile(src_path):
             print(f"Generating file: {src_path} -> {dest_path}")
-            generate_page(src_path, template_path, dest_path)
+            generate_page(src_path, template_path, dest_path, base_path)
 
 
 # Run the script
 if __name__ == "__main__":
-    sync_directories()
-    generate_pages_recursive('content', 'template.html', 'public')
+    base_path = '/'
+    if len(sys.argv) == 2:
+        base_path = sys.argv[1]
+
+    sync_directories('docs')
+    generate_pages_recursive('content', 'template.html', 'docs', base_path)
